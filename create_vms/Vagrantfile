@@ -1,0 +1,35 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+VAGRANTFILE_API_VERSION = "2"
+#to install a vm with ansible
+$ansible_packages= <<SCRIPT
+yum install -y epel-release && yum update -y \
+&& yum -y install ansible
+SCRIPT
+#to install a vm with packages for a traditional boot pxe system
+$pxeboot= <<SCRIPT
+yum update -y &&  yum install -y dhcp tftp tftp-server syslinux wget vsftpd
+SCRIPT
+
+vms = {
+  "ansible" => { :ip => "192.168.10.10", :cpus => 1, :mem => 1024, :packages => $ansible_packages },
+  "pxeboot" => { :ip => "192.168.10.11", :cpus => 1, :mem => 1024, :packages => $pxeboot }
+}
+ 
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+
+  vms.each_with_index do |(virtualmachine, vminfo), index|
+
+    config.vm.define virtualmachine do |cfg|
+      cfg.vm.provider :virtualbox do |vb, override|
+        config.vm.box = "bento/centos-7.4"
+        override.vm.network :private_network, ip: vminfo[:ip]
+        override.vm.hostname = virtualmachine
+        override.vm.provision "shell", inline: vminfo[:packages]
+        vb.name = virtualmachine
+        vb.customize ["modifyvm", :id, "--memory", vminfo[:mem], "--cpus", vminfo[:cpus], "--hwvirtex", "on"]
+      end # end provider
+    end # end config
+  end # end vms
+end
