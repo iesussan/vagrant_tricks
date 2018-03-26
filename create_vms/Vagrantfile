@@ -1,7 +1,6 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-VAGRANTFILE_API_VERSION = "2"
 #to install a vm with ansible
 $ansible_packages= <<SCRIPT
 yum install -y epel-release && yum update -y \
@@ -16,8 +15,8 @@ vms = {
   "ansible" => { :ip => "192.168.10.10", :cpus => 1, :mem => 1024, :packages => $ansible_packages },
   "pxeboot" => { :ip => "192.168.10.11", :cpus => 1, :mem => 1024, :packages => $pxeboot }
 }
- 
-Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+
+Vagrant.configure(vms.count) do |config|
 
   vms.each_with_index do |(virtualmachine, vminfo), index|
 
