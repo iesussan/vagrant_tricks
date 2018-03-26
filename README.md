@@ -9,7 +9,7 @@ to create multiple virtual machines, customized, in a single iteration cycle use
 ```
 cd create_vms
 ```
-add or edit the scripts for each of your virtual machines, for example in this scripts
+add or edit the scripts for each virtual machines, for example in this scripts
 ```
 $ansible_packages= <<SCRIPT
 yum install -y epel-release && yum update -y \
