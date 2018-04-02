@@ -1,11 +1,15 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
+#configure version values 1 or 2
+$VAGRANT_CONFIGURE_VERSION = '2'
+
 #to install a vm with ansible
 $ansible_packages= <<SCRIPT
 yum install -y epel-release && yum update -y \
 && yum -y install ansible
 SCRIPT
+
 #to install a vm with packages for a traditional boot pxe system
 $pxeboot= <<SCRIPT
 yum update -y &&  yum install -y dhcp tftp tftp-server syslinux wget vsftpd
@@ -16,7 +20,7 @@ vms = {
   "pxeboot" => { :ip => "192.168.10.11", :cpus => 1, :mem => 1024, :packages => $pxeboot }
 }
 
-Vagrant.configure(vms.count) do |config|
+Vagrant.configure($VAGRANT_CONFIGURE_VERSION) do |config|
 
   vms.each_with_index do |(virtualmachine, vminfo), index|
 
